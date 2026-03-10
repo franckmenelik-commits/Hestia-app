@@ -977,6 +977,12 @@ const Dashboard = ({ lang, user, answers, isPremium, onUpgrade, onLogout }) => {
             </span>
           )}
           <Avatar emoji="👤" size="w-9 h-9" />
+          <button
+            onClick={onLogout}
+            className="font-sans text-xs text-warm-500 border border-warm-200 px-3 py-1.5 rounded-xl hover:bg-cream hover:text-terracotta transition-colors"
+          >
+            {lang === "fr" ? "Déconnexion" : "Logout"}
+          </button>
         </div>
       </div>
 
