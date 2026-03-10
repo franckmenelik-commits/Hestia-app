@@ -1437,15 +1437,52 @@ export default function HestiaApp() {
   const [user, setUser] = useState(null);
   const [answers, setAnswers] = useState({});
   const [isPremium, setIsPremium] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const handleAuth = (name, email) => {
-    setUser({ name, email });
-    setScreen("onboarding");
-  };
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        const meta = session.user.user_metadata;
+        const u = { name: meta?.name || "Vous", email: session.user.email };
+        setUser(u);
+
+        const { data: profile } = await supabase
+          .from("users")
+          .select("is_premium, hestia_points, name")
+          .eq("id", session.user.id)
+          .single();
+
+        if (profile) {
+          setIsPremium(profile.is_premium || false);
+          setUser((prev) => ({ ...prev, name: profile.name || prev.name }));
+        }
+
+        setScreen((prev) => (prev === "landing" || prev === "auth") ? "onboarding" : prev);
+      } else {
+        setUser(null);
+        setScreen("landing");
+      }
+      setLoading(false);
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleComplete = (ans) => {
     setAnswers(ans);
     setScreen("dashboard");
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setAnswers({});
+    setIsPremium(false);
+    setScreen("landing");
   };
 
   const handleUpgrade = async () => {
@@ -1465,12 +1502,20 @@ export default function HestiaApp() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-cream-light flex items-center justify-center">
+        <span className="font-serif text-xl tracking-widest text-warm-800 italic animate-pulse">HESTIA</span>
+      </div>
+    );
+  }
+
   return (
     <div>
       {screen === "landing" && (
         <LandingPage lang={lang} setLang={setLang} onStart={() => setScreen("auth")} />
       )}
-      {screen === "auth" && <AuthPage lang={lang} onAuth={handleAuth} />}
+      {screen === "auth" && <AuthPage lang={lang} onAuth={() => {}} />}
       {screen === "onboarding" && <Questionnaire lang={lang} onComplete={handleComplete} />}
       {screen === "dashboard" && (
         <Dashboard
@@ -1479,6 +1524,7 @@ export default function HestiaApp() {
           answers={answers}
           isPremium={isPremium}
           onUpgrade={handleUpgrade}
+          onLogout={handleLogout}
         />
       )}
     </div>
