@@ -370,14 +370,14 @@ const SocialTicker = () => {
   ];
   const doubled = [...items, ...items];
   return (
-    <div className="overflow-hidden bg-warm-800 py-3">
+    <div className="overflow-hidden bg-cream py-2 border-b border-warm-100">
       <motion.div
-        className="flex whitespace-nowrap gap-12"
+        className="flex whitespace-nowrap gap-10"
         animate={{ x: ["0%", "-50%"] }}
-        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+        transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
       >
         {doubled.map((item, i) => (
-          <span key={i} className="font-sans text-sm text-warm-300 tracking-wide">{item}</span>
+          <span key={i} className="font-sans text-xs text-terracotta/70 tracking-wide">{item}</span>
         ))}
       </motion.div>
     </div>
