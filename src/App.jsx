@@ -230,8 +230,10 @@ const ScoreBadge = ({ score, large }) => {
   );
 };
 
-const Avatar = ({ emoji, size = "w-12 h-12" }) => (
-  <div className={`${size} rounded-full bg-terracotta/10 border border-terracotta/20 flex items-center justify-center text-xl flex-shrink-0`}>{emoji}</div>
+const Avatar = ({ emoji, initials, size = "w-12 h-12" }) => (
+  <div className={`${size} rounded-full bg-terracotta/10 border border-terracotta/20 flex items-center justify-center flex-shrink-0 ${initials ? "font-sans font-bold text-terracotta" : "text-xl"}`}>
+    {initials || emoji}
+  </div>
 );
 
 const NiveauBadge = ({ exchangeCount, compact }) => {
