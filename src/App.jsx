@@ -1507,6 +1507,19 @@ export default function HestiaApp() {
   const [answers, setAnswers] = useState({});
   const [isPremium, setIsPremium] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [confirmationBanner, setConfirmationBanner] = useState(false);
+
+  useEffect(() => {
+    // Check for email confirmation redirect (hash contains type=signup or type=recovery)
+    const hash = window.location.hash;
+    if (hash && (hash.includes("type=signup") || hash.includes("type=magiclink"))) {
+      // User just confirmed their email — show login with success banner
+      setConfirmationBanner(true);
+      setScreen("auth");
+      // Clean up URL hash
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  }, []);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -1526,11 +1539,87 @@ export default function HestiaApp() {
           setUser((prev) => ({ ...prev, name: profile.name || prev.name }));
         }
 
-        setScreen((prev) => (prev === "landing" || prev === "auth") ? "onboarding" : prev);
+        // If user just confirmed email, send them to login instead of auto-redirecting
+        if (confirmationBanner) {
+          // Don't auto-redirect, let them log in manually
+          setScreen("auth");
+        } else {
+          setScreen((prev) => (prev === "landing" || prev === "auth") ? "onboarding" : prev);
+        }
       } else {
         setUser(null);
-        setScreen("landing");
+        if (!confirmationBanner) {
+          setScreen("landing");
+        }
       }
+      setLoading(false);
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [confirmationBanner]);
+
+  const handleComplete = (ans) => {
+    setAnswers(ans);
+    setScreen("dashboard");
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setAnswers({});
+    setIsPremium(false);
+    setScreen("landing");
+  };
+
+  const handleUpgrade = async () => {
+    try {
+      const res = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Erreur : " + data.error);
+      }
+    } catch (err) {
+      alert("Erreur réseau : " + err.message);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-cream-light flex items-center justify-center">
+        <span className="font-serif text-xl tracking-widest text-warm-800 italic animate-pulse">HESTIA</span>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      {screen === "landing" && (
+        <LandingPage lang={lang} setLang={setLang} onStart={() => setScreen("auth")} />
+      )}
+      {screen === "auth" && <AuthPage lang={lang} onAuth={() => {}} confirmationBanner={confirmationBanner} />}
+      {screen === "onboarding" && <Questionnaire lang={lang} onComplete={handleComplete} />}
+      {screen === "dashboard" && (
+        <Dashboard
+          lang={lang}
+          user={user || { name: "Vous", email: "" }}
+          answers={answers}
+          isPremium={isPremium}
+          onUpgrade={handleUpgrade}
+          onLogout={handleLogout}
+        />
+      )}
+    </div>
+  );
+}
       setLoading(false);
     });
 
