@@ -501,8 +501,6 @@ const LandingPage = ({ onOpenAuth, onOpenWaitlist, onNavigate }) => {
         </div>
       </section>
 
-      {/* Social Proof Ticker */}
-      <SocialTicker />
 
       {/* How it Works */}
       <section id="how-it-works" className="max-w-5xl mx-auto px-6 py-20 md:py-28">
