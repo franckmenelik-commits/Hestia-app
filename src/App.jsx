@@ -551,13 +551,23 @@ const LandingPage = ({ onOpenAuth, onOpenWaitlist, onNavigate }) => {
         </div>
       </section>
 
-      {/* Live Counter */}
-      <section className="py-16 bg-gradient-to-r from-terracotta to-terracotta-dark text-white">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="font-serif text-4xl md:text-5xl font-bold mb-3">
-            <AnimatedCounter target={1247} /> maisons disponibles
-          </h2>
-          <p className="font-sans text-white/70 text-lg">dans <span className="font-semibold text-white">34 pays</span> à travers le monde</p>
+      {/* Stats Section */}
+      <section className="py-16 md:py-20 bg-cream">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="grid grid-cols-3 gap-4 md:gap-8 text-center">
+            <div>
+              <p className="font-serif text-3xl md:text-5xl font-bold text-terracotta"><AnimatedCounter target={1247} /></p>
+              <p className="font-sans text-warm-500 text-xs md:text-sm mt-1 md:mt-2">maisons disponibles</p>
+            </div>
+            <div>
+              <p className="font-serif text-3xl md:text-5xl font-bold text-terracotta"><AnimatedCounter target={34} /></p>
+              <p className="font-sans text-warm-500 text-xs md:text-sm mt-1 md:mt-2">pays</p>
+            </div>
+            <div>
+              <p className="font-serif text-3xl md:text-5xl font-bold text-terracotta"><AnimatedCounter target={98} />%</p>
+              <p className="font-sans text-warm-500 text-xs md:text-sm mt-1 md:mt-2">de matchs satisfaits</p>
+            </div>
+          </div>
         </div>
       </section>
 
