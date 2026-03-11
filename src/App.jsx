@@ -508,18 +508,20 @@ const LandingPage = ({ onOpenAuth, onOpenWaitlist, onNavigate }) => {
       <section id="how-it-works" className="max-w-5xl mx-auto px-6 py-20 md:py-28">
         <p className="text-xs tracking-[0.25em] uppercase text-terracotta font-sans font-medium text-center mb-3">Comment ça marche</p>
         <h2 className="font-serif text-3xl md:text-4xl font-bold text-warm-900 text-center mb-16">4 étapes vers votre prochain échange</h2>
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
           {[
-            { step: "01", icon: "👤", title: "Créez votre profil", desc: "Décrivez votre maison, votre style de vie et vos envies de voyage." },
-            { step: "02", icon: "📝", title: "Répondez au questionnaire", desc: "Notre algorithme analyse 8 dimensions de compatibilité." },
-            { step: "03", icon: "✨", title: "Recevez vos matchs", desc: "Des suggestions personnalisées avec score de compatibilité détaillé." },
-            { step: "04", icon: "🤝", title: "Échangez en confiance", desc: "Assurance incluse, contrat automatique, contacts protégés." },
+            { step: "01", Icon: User, title: "Créez votre profil", desc: "Décrivez votre maison, votre style de vie et vos envies de voyage." },
+            { step: "02", Icon: ClipboardList, title: "Répondez au questionnaire", desc: "Notre algorithme analyse 8 dimensions de compatibilité." },
+            { step: "03", Icon: Sparkles, title: "Recevez vos matchs", desc: "Des suggestions personnalisées avec score de compatibilité détaillé." },
+            { step: "04", Icon: Handshake, title: "Échangez en confiance", desc: "Assurance incluse, contrat automatique, contacts protégés." },
           ].map((item, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.12, duration: 0.5 }} className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-terracotta/8 border border-terracotta/15 flex items-center justify-center text-2xl">{item.icon}</div>
+              <div className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-4 rounded-full bg-terracotta/10 border border-terracotta/20 flex items-center justify-center">
+                <item.Icon className="text-terracotta" size={24} />
+              </div>
               <p className="font-sans text-[0.65rem] tracking-[0.2em] uppercase text-terracotta mb-2">{item.step}</p>
-              <h3 className="font-serif text-lg font-bold text-warm-800 mb-2">{item.title}</h3>
-              <p className="font-sans text-warm-500 text-sm leading-relaxed">{item.desc}</p>
+              <h3 className="font-serif text-base md:text-lg font-bold text-warm-800 mb-2">{item.title}</h3>
+              <p className="font-sans text-warm-500 text-xs md:text-sm leading-relaxed">{item.desc}</p>
             </motion.div>
           ))}
         </div>
